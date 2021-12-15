@@ -1,0 +1,43 @@
+plugins {
+  id 'java-library'
+  id "io.franzbecker.gradle-lombok" version "5.0.0"
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  // Use JUnit Jupiter for testing.
+  testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
+  testImplementation 'io.rest-assured:rest-assured:4.3.3'
+  testImplementation 'org.assertj:assertj-core:3.16.1'
+
+  api "org.testcontainers:testcontainers:1.16.2"
+  implementation 'ch.qos.logback:logback-classic:1.2.3'
+  annotationProcessor 'org.projectlombok:lombok:1.18.18'
+  implementation 'org.projectlombok:lombok:1.18.18'
+
+}
+
+tasks.named('test') {
+  // Use JUnit Platform for unit tests.
+  useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+  options.compilerArgs = [
+      '-Xlint:unchecked',
+      '-Xlint:deprecation',
+      '-Werror'
+  ]
+}
+
+test {
+  testLogging {
+    outputs.upToDateWhen { false }
+    showStandardStreams = false
+    events "passed", "skipped", "failed"
+    exceptionFormat "full"
+  }
+}
