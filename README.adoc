@@ -1,0 +1,55 @@
+= TestContainers Module for Kong API Gateway 
+Viktor Gamov <viktor@konghq.com>, © 2021 kong, Inc.
+2021-12-14
+:linkattrs:
+:ast: &ast;
+:y: &#10003;
+:n: &#10008;
+:y: icon:check-sign[role="green"]
+:n: icon:check-minus[role="red"]
+:c: icon:file-text-alt[role="blue"]
+:toc: auto
+:toc-placement: macro
+:toc-position: right
+:toc-title: Table of content
+:toclevels: 3
+:idprefix:
+:idseparator: -
+:sectanchors:
+:icons: font
+:source-highlighter: highlight.js
+:highlightjs-theme: idea
+:experimental:
+
+toc::[]
+
+== Getting binaries
+
+NOTE: While library is `0.1-SNAPSHOT` binaries hosted in jitpack
+
+[source,groovy]
+----
+project {
+  repositories {
+    maven { url 'https://jitpack.io' }
+  }
+  dependencies {
+    implementation 'com.github.gAmUssA:testcontainers-kong:master-SNAPSHOT'
+  }
+}
+----
+
+== Supported Components
+
+* [x] Kong dbless (declarative config)
+* [ ] Kong with postgres
+
+== License
+
+See LICENSE
+
+== Copyright
+
+Copyright (c) 2021 Viktor Gamov
+
+Based on http://www.testcontainers.org
