@@ -8,7 +8,8 @@ public class KongContainer extends GenericContainer<KongContainer> {
 
   private static final DockerImageName DEFAULT_IMAGE_NAME = DockerImageName.parse("kong");
   private static final String DEFAULT_TAG = "2.6.0-alpine";
-  private static int DEFAULT_ADMIN_PORT = 8001;
+  public static int DEFAULT_ADMIN_PORT = 8001;
+  public static int DEFAULT_PROXY_PORT = 8000;
   private boolean enableAdmin;
 
   public KongContainer(DockerImageName dockerImageName) {
@@ -31,7 +32,6 @@ public class KongContainer extends GenericContainer<KongContainer> {
       withEnv("KONG_ADMIN_LISTEN", "0.0.0.0:" + DEFAULT_ADMIN_PORT);
       withExposedPorts(DEFAULT_ADMIN_PORT);
     //}
-    
     //withCommand("kong start");
     withCommand("kong start --v");
   }
