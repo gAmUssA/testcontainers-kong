@@ -1,6 +1,7 @@
 plugins {
   id 'java-library'
   id "io.franzbecker.gradle-lombok" version "5.0.0"
+  id 'maven-publish'
 }
 
 repositories {
