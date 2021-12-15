@@ -17,7 +17,7 @@ dependencies {
   testImplementation 'org.assertj:assertj-core:3.16.1'
 
   api "org.testcontainers:testcontainers:1.16.2"
-  implementation 'ch.qos.logback:logback-classic:1.2.3'
+  implementation 'ch.qos.logback:logback-classic:1.2.8'
   annotationProcessor 'org.projectlombok:lombok:1.18.22'
   implementation 'org.projectlombok:lombok:1.18.18'
 
