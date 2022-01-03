@@ -26,6 +26,7 @@ public class KongGatewaysContainerTest {
   void admin_gui_should_be_exposed() {
 
     // using kong/kong-gateway enterprise edition
+    // this test is inspired by SO https://stackoverflow.com/questions/70510441/not-able-to-reach-admin-api-through-kong-manager-gui-using-docker-compose
     try (final var kongContainer = new KongContainer(parse("kong/kong-gateway:2.6"))) {
       kongContainer
           .withLogConsumer(new Slf4jLogConsumer(log))
