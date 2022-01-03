@@ -4,12 +4,15 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.konghq.testcontainers.KongContainer.KONG_COMMUNITY_IMAGE;
 import static com.konghq.testcontainers.KongContainer.KONG_DEFAULT_TAG;
 import static io.restassured.RestAssured.get;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -35,18 +38,7 @@ public class KongContainerTest {
         .start();
   }
 
-
-  @Test
-  @DisplayName("should expose Admin URL")
-  void should_expose_admin_url() {
-    get(kongContainer.getaAdminUrl())
-        //.peek()
-        .then()
-        .contentType(ContentType.JSON)
-        .statusCode(200)
-        .header("Server", equalTo("kong/2.6.0"));
-  }
-
+  
   @Test
   @DisplayName("should run Kong in dbless mode")
   void should_run_in_dbless_mode() {
