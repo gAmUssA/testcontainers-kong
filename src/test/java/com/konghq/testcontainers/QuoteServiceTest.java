@@ -1,5 +1,6 @@
 package com.konghq.testcontainers;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
@@ -16,7 +17,8 @@ import static org.testcontainers.utility.DockerImageName.parse;
 public class QuoteServiceTest {
 
   @Test
-  void test_declarative_config_for_QuoteService() {
+  @DisplayName("should expose QuoteService via declarative config")
+  void should_expose_QuoteService() {
     try (final var kong = new KongContainer(parse("kong:2.6.0-alpine"))) {
 
       kong

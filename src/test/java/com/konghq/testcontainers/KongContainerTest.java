@@ -1,26 +1,18 @@
 package com.konghq.testcontainers;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.Network;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
-import org.testcontainers.containers.wait.strategy.DockerHealthcheckWaitStrategy;
-import org.testcontainers.containers.wait.strategy.WaitStrategy;
-import org.testcontainers.lifecycle.Startables;
-
-import java.util.List;
 
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
-import io.restassured.path.xml.XmlPath;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.konghq.testcontainers.KongContainer.DEFAULT_ADMIN_GUI_PORT;
-import static com.konghq.testcontainers.KongContainer.DEFAULT_ADMIN_PORT;
-import static com.konghq.testcontainers.KongContainer.DEFAULT_PROXY_PORT;
+import static com.konghq.testcontainers.KongContainer.KONG_DEFAULT_TAG;
 import static io.restassured.RestAssured.get;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.equalTo;
 import static org.testcontainers.containers.BindMode.READ_ONLY;
 import static org.testcontainers.utility.DockerImageName.*;
@@ -28,45 +20,49 @@ import static org.testcontainers.utility.DockerImageName.*;
 @Slf4j
 public class KongContainerTest {
 
-  @Test
-  void smokeTest() {
-    try (
-        final var kongContainer = new KongContainer(parse("kong:2.6.0-alpine"));
+  static KongContainer kongContainer;
 
-    ) {
-      //kongContainer.withLogConsumer(new Slf4jLogConsumer(log));
-      kongContainer
-          .withClasspathResourceMapping("kong.yaml", "/opt/kong/kong.yaml", READ_ONLY)
-          .withEnv("KONG_DECLARATIVE_CONFIG", "/opt/kong/kong.yaml")
-          .withCommand("kong start --v")
-          .start();
-    }
+  @BeforeAll
+  static void startKong() {
+
+    kongContainer = new KongContainer(parse(KONG_DEFAULT_TAG));
+
+    //kongContainer.withLogConsumer(new Slf4jLogConsumer(log));
+    kongContainer
+        .withClasspathResourceMapping("kong.yaml", "/opt/kong/kong.yaml", READ_ONLY)
+        .withEnv("KONG_DECLARATIVE_CONFIG", "/opt/kong/kong.yaml")
+        .withCommand("kong start --v")
+        .start();
+  }
+
+
+  @Test
+  @DisplayName("should expose Admin URL")
+  void should_expose_admin_url() {
+    get(kongContainer.getaAdminUrl())
+        //.peek()
+        .then()
+        .contentType(ContentType.JSON)
+        .statusCode(200)
+        .header("Server", equalTo("kong/2.6.0"));
   }
 
   @Test
-  void admin_url_should_be_exposed() {
-    try (final var kongContainer = new KongContainer(parse("kong:2.6.0-alpine"))) {
-      kongContainer.withLogConsumer(new Slf4jLogConsumer(log));
-      kongContainer.withClasspathResourceMapping("kong.yaml", "/opt/kong/kong.yaml", READ_ONLY);
-      kongContainer.withEnv("KONG_DECLARATIVE_CONFIG", "/opt/kong/kong.yaml");
-      kongContainer.start();
-      get(kongContainer.getaAdminUrl())
-          //.peek()
-          .then()
-          .contentType(ContentType.JSON)
-          .statusCode(200)
-          .header("Server", equalTo("kong/2.6.0"));
+  @DisplayName("should run Kong in dbless mode")
+  void should_run_in_dbless_mode() {
+    final JsonPath path = get(kongContainer.getaAdminUrl())
+        //.peek()
+        .then()
+        .assertThat()
+        .contentType(ContentType.JSON)
+        .statusCode(200)
+        .extract().response().jsonPath();
 
-      final JsonPath path = get(kongContainer.getaAdminUrl())
-          //.peek()
-          .then()
-          .assertThat()
-          .contentType(ContentType.JSON)
-          .statusCode(200)
-          .extract().response().jsonPath();
-
-      assertThat("off", equalTo(path.get("configuration.database")));
-    }
+    assertThat("off", equalTo(path.get("configuration.database")));
   }
-  
+
+  @AfterAll
+  static void cleanup() {
+    kongContainer.close();
+  }
 }

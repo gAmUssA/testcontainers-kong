@@ -1,5 +1,7 @@
 package com.konghq.testcontainers;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 
@@ -22,39 +24,48 @@ import static org.testcontainers.utility.DockerImageName.parse;
  */
 public class KongGatewaysContainerTest {
 
+  static KongContainer kongContainer;
+
+  @BeforeAll
+  static void setupKongContainer() {
+    kongContainer = new KongContainer(parse("kong/kong-gateway:2.6"));
+    kongContainer
+        .withLogConsumer(new Slf4jLogConsumer(log))
+        .withClasspathResourceMapping("kong.yaml", "/opt/kong/kong.yaml", READ_ONLY)
+        .withEnv("KONG_DECLARATIVE_CONFIG", "/opt/kong/kong.yaml")
+        .withNetworkAliases("kong")
+        .withEnv("KONG_ADMIN_GUI_URL", "http://kong" + DEFAULT_ADMIN_GUI_PORT)
+        .withEnv("KONG_ADMIN_API_URI", "http://kong" + DEFAULT_ADMIN_PORT)
+        .withExposedPorts(DEFAULT_ADMIN_PORT, DEFAULT_ADMIN_GUI_PORT)
+        .start();
+  }
+
   @Test
-  void admin_gui_should_be_exposed() {
+  @DisplayName("should run Kong EE")
+  void should_run_enterprise_edition() {
+    get(kongContainer.getaAdminUrl())
+        //.peek()
+        .then()
+        .contentType(ContentType.JSON)
+        .statusCode(200)
+        .header("Server", containsStringIgnoringCase("enterprise-edition"));
+  }
+
+  @Test
+  @DisplayName("should enable Kong Manager")
+  void should_expose_admin_gui() {
 
     // using kong/kong-gateway enterprise edition
     // this test is inspired by SO https://stackoverflow.com/questions/70510441/not-able-to-reach-admin-api-through-kong-manager-gui-using-docker-compose
-    try (final var kongContainer = new KongContainer(parse("kong/kong-gateway:2.6"))) {
-      kongContainer
-          .withLogConsumer(new Slf4jLogConsumer(log))
-          .withClasspathResourceMapping("kong.yaml", "/opt/kong/kong.yaml", READ_ONLY)
-          .withEnv("KONG_DECLARATIVE_CONFIG", "/opt/kong/kong.yaml")
-          .withNetworkAliases("kong")
-          .withEnv("KONG_ADMIN_GUI_URL", "http://kong" + DEFAULT_ADMIN_GUI_PORT)
-          .withEnv("KONG_ADMIN_API_URI", "http://kong" + DEFAULT_ADMIN_PORT)
-          .withExposedPorts(DEFAULT_ADMIN_PORT, DEFAULT_ADMIN_GUI_PORT)
-          .start();
+    var htmlPath = get(kongContainer.getaAdminGuiUrl())
+        // .peek()
+        .then()
+        .assertThat()
+        .contentType(ContentType.HTML)
+        .statusCode(200)
+        .extract().response().htmlPath();
 
-      get(kongContainer.getaAdminUrl())
-          //.peek()
-          .then()
-          .contentType(ContentType.JSON)
-          .statusCode(200)
-          .header("Server", containsStringIgnoringCase("enterprise-edition"));
-
-      var htmlPath = get(kongContainer.getaAdminGuiUrl())
-          // .peek()
-          .then()
-          .assertThat()
-          .contentType(ContentType.HTML)
-          .statusCode(200)
-          .extract().response().htmlPath();
-
-      assertThat("Kong Admin", equalTo(htmlPath.get("html.head.title")));
-    }
+    assertThat("Kong Admin", equalTo(htmlPath.get("html.head.title")));
   }
-
 }
+

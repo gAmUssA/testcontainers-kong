@@ -6,9 +6,14 @@ import org.testcontainers.utility.DockerImageName;
 
 public class KongContainer extends GenericContainer<KongContainer> {
 
-  private static final DockerImageName DEFAULT_IMAGE_NAME = DockerImageName.parse("kong");
-  private static final DockerImageName ENTERPRISE_IMAGE_NAME = DockerImageName.parse("kong/kong-gateway");
-  private static final String DEFAULT_TAG = "2.6.0-alpine";
+  final static String KONG_COMMUNITY_IMAGE = "kong";
+  final static String KONG_EE_IMAGE = "kong/kong-gateway";
+  
+  public static final String KONG_DEFAULT_TAG = KONG_COMMUNITY_IMAGE + ":2.6.0";
+  private static final DockerImageName DEFAULT_IMAGE_NAME = DockerImageName.parse(KONG_COMMUNITY_IMAGE);
+
+  private static final DockerImageName ENTERPRISE_IMAGE_NAME = DockerImageName.parse(KONG_EE_IMAGE);
+
   public static int DEFAULT_PROXY_PORT = 8000;
   public static int DEFAULT_ADMIN_PORT = 8001;
 
