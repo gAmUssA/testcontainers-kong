@@ -8,7 +8,7 @@ public class KongContainer extends GenericContainer<KongContainer> {
 
   final static String KONG_COMMUNITY_IMAGE = "kong";
   final static String KONG_EE_IMAGE = "kong/kong-gateway";
-  
+
   public static final String KONG_DEFAULT_TAG = KONG_COMMUNITY_IMAGE + ":2.6.0";
   private static final DockerImageName DEFAULT_IMAGE_NAME = DockerImageName.parse(KONG_COMMUNITY_IMAGE);
 
@@ -46,6 +46,10 @@ public class KongContainer extends GenericContainer<KongContainer> {
 
   public String getaAdminUrl() {
     return String.format("http://%s:%s", getHost(), getMappedPort(DEFAULT_ADMIN_PORT));
+  }
+
+  public String getProxyUrl() {
+    return String.format("http://%s:%s", getHost(), getMappedPort(DEFAULT_PROXY_PORT));
   }
 
   public String getaAdminGuiUrl() {
