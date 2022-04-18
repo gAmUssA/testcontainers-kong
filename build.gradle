@@ -18,7 +18,7 @@ dependencies {
 
   api "org.testcontainers:testcontainers:1.16.2"
   implementation 'ch.qos.logback:logback-classic:1.2.10'
-  annotationProcessor 'org.projectlombok:lombok:1.18.22'
+  annotationProcessor 'org.projectlombok:lombok:1.18.24'
   implementation 'org.projectlombok:lombok:1.18.22'
 
   testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
