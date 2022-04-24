@@ -34,8 +34,8 @@ public class KongGatewaysContainerTest {
         .withClasspathResourceMapping("kong.yaml", "/opt/kong/kong.yaml", READ_ONLY)
         .withEnv("KONG_DECLARATIVE_CONFIG", "/opt/kong/kong.yaml")
         .withNetworkAliases("kong")
-        .withEnv("KONG_ADMIN_GUI_URL", "http://kong" + DEFAULT_ADMIN_GUI_PORT)
-        .withEnv("KONG_ADMIN_API_URI", "http://kong" + DEFAULT_ADMIN_PORT)
+        .withEnv("KONG_ADMIN_GUI_URL", "http://kong:" + DEFAULT_ADMIN_GUI_PORT)
+        .withEnv("KONG_ADMIN_API_URI", "http://kong:" + DEFAULT_ADMIN_PORT)
         .withExposedPorts(DEFAULT_ADMIN_PORT, DEFAULT_ADMIN_GUI_PORT)
         .start();
   }
@@ -44,7 +44,7 @@ public class KongGatewaysContainerTest {
   @DisplayName("should run Kong EE")
   void should_run_enterprise_edition() {
     get(kongContainer.getaAdminUrl())
-        //.peek()
+        .peek()
         .then()
         .contentType(ContentType.JSON)
         .statusCode(200)
@@ -58,7 +58,7 @@ public class KongGatewaysContainerTest {
     // using kong/kong-gateway enterprise edition
     // this test is inspired by SO https://stackoverflow.com/questions/70510441/not-able-to-reach-admin-api-through-kong-manager-gui-using-docker-compose
     var htmlPath = get(kongContainer.getaAdminGuiUrl())
-        // .peek()
+        .peek()
         .then()
         .assertThat()
         .contentType(ContentType.HTML)
