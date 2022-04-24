@@ -72,7 +72,8 @@ class KongServiceRoutePluginTest {
   @Test
   @DisplayName("Should return 401 from Kong")
   void "should proxy"() {
-    def htmlPath = given().header("Host", "example.com")
+    def jsonPath = given()
+        .header("Host", "example.com")
         .get(kongContainer.getProxyUrl())
         .peek()
         .then()
@@ -80,7 +81,7 @@ class KongServiceRoutePluginTest {
         .header("Server", containsString("kong"))
         .extract().response().jsonPath()
 
-    assertThat("No API key found in request", equalTo(htmlPath.get("message")))
+    assertThat("No API key found in request", equalTo(jsonPath.get("message")))
   }
 
   @Test

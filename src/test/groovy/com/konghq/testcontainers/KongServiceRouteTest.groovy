@@ -65,7 +65,8 @@ class KongServiceRouteTest {
   @Test
   @DisplayName("Kong should proxy to Mockbin")
   void "should proxy"() {
-    def htmlPath = given().header("Host", "example.com")
+    def htmlPath = given()
+        .header("Host", "example.com")
         .get(kongContainer.getProxyUrl())
         .peek()
         .then()
