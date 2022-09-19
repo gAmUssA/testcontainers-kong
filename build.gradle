@@ -33,7 +33,7 @@ dependencies {
   testCompileOnly "org.projectlombok:lombok:$lombokVer"
 
   testImplementation('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2')
-  testImplementation 'org.codehaus.groovy:groovy-all:3.0.10'
+  testImplementation 'org.codehaus.groovy:groovy-all:3.0.13'
 }
 
 tasks.named('test') {
