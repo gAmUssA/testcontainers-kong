@@ -18,7 +18,7 @@ ext {
 }
 dependencies {
   // Use JUnit Jupiter for testing.
-  testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+  testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
   testImplementation 'io.rest-assured:rest-assured:4.5.0'
   testImplementation 'org.assertj:assertj-core:3.22.0'
 
