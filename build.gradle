@@ -32,7 +32,7 @@ dependencies {
   testAnnotationProcessor "org.projectlombok:lombok:$lombokVer"
   testCompileOnly "org.projectlombok:lombok:$lombokVer"
 
-  testImplementation('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2')
+  testImplementation('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.1')
   testImplementation 'org.codehaus.groovy:groovy-all:3.0.10'
 }
 
