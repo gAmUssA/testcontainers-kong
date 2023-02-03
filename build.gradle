@@ -14,7 +14,7 @@ sourceSets.test.java.srcDirs = []
 sourceSets.test.groovy.srcDirs = ["src/test/java", "src/test/groovy"]
 
 ext {
-  lombokVer = '1.18.24'
+  lombokVer = '1.18.26'
 }
 dependencies {
   // Use JUnit Jupiter for testing.
